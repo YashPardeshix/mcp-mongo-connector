@@ -23,7 +23,7 @@ def translate_to_mongodb_query(
     {json.dumps(schema_info, indent=2)}
     
     Rules:
-    1. Output ONLY a valid JSON object representing the MongoDB query filter.
+    1. Output ONLY a valid JSON object representing the MongoDB query filter..
     2. Do NOT include markdown codeblocks (no ```json).
     3. Use exact field names from the Schema Map.
     """
