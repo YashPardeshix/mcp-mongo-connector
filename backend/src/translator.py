@@ -25,7 +25,7 @@ def translate_to_mongodb_query(
     Rules:
     1. Output ONLY a valid JSON object representing the MongoDB query filter.
     2. Do NOT include markdown codeblocks (no ```json).
-    3. Use exact field names from the Schema Map.
+    3. Use exact field names from the Schema Map..
     """
 
     response = client.chat.completions.create(
