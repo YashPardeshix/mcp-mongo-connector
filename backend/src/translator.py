@@ -12,7 +12,9 @@ client = OpenAI(api_key=api_key, base_url=base_url)
 
 
 def translate_to_mongodb_query(
-    user_request: str, schema_info: dict, model_name: str = "meta/llama-3.1-405b-instruct"
+    user_request: str,
+    schema_info: dict,
+    model_name: str = "deepseek-ai/deepseek-r1"
 ) -> dict:
     """Translates a natural language user request into a MongoDB query dictionary based on schema."""
     system_prompt = f"""
@@ -46,3 +48,22 @@ def translate_to_mongodb_query(
         raw_output = raw_output.strip()
 
     return json.loads(raw_output)
+
+if __name__ == "__main__":
+    test_schema = {
+        "collection": "products",
+        "fields": {
+            "title": "string",
+            "price": "number",
+            "category": "string",
+            "in_stock": "boolean",
+        },
+    }
+
+    test_request = (
+        "Find all products in category shoes with price less than 100"
+    )
+
+    result = translate_to_mongodb_query(test_request, test_schema)
+    print("Translated Query Output:")
+    print(json.dumps(result, indent=2))
