@@ -5,8 +5,8 @@ from openai import OpenAI
 
 load_dotenv()
 
-api_key = os.getenv("NVIDIA_API_KEY") or os.getenv("OPENAI_API_KEY")
-base_url = os.getenv("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
+api_key = os.getenv("NVIDIA_API_KEY")
+base_url = "https://integrate.api.nvidia.com/v1"
 
 client = OpenAI(api_key=api_key, base_url=base_url)
 
@@ -14,19 +14,19 @@ client = OpenAI(api_key=api_key, base_url=base_url)
 def translate_to_mongodb_query(
     user_request: str,
     schema_info: dict,
-    model_name: str = "deepseek-ai/deepseek-r1"
+    model_name: str = "nvidia/nemotron-3-ultra-550b-a55b",
 ) -> dict:
-    """Translates a natural language user request into a MongoDB query dictionary based on schema."""
+    """Translates a natural language user request into a MongoDB query dictionary."""
     system_prompt = f"""
-    You are an expert MongoDB Query Translator.
-    Your job is to translate a user's natural language request into a valid MongoDB filter query object.
+    You are a MongoDB Query Translator.
+    Convert the user's natural language request into a valid MongoDB query filter JSON object based on the schema.
     
     Collection Schema Map:
     {json.dumps(schema_info, indent=2)}
     
     Rules:
     1. Output ONLY a valid JSON object representing the MongoDB query filter.
-    2. Do NOT include markdown codeblocks (no ```json).
+    2. Do NOT include markdown codeblocks or extra text.
     3. Use exact field names from the Schema Map.
     """
 
@@ -64,6 +64,7 @@ if __name__ == "__main__":
         "Find all products in category shoes with price less than 100"
     )
 
+    print("Sending request to NVIDIA model...")
     result = translate_to_mongodb_query(test_request, test_schema)
-    print("Translated Query Output:")
+    print("\nTranslated Query Output:")
     print(json.dumps(result, indent=2))
