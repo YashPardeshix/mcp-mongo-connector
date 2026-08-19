@@ -1,9 +1,9 @@
 import json
 from db import execute_query
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from translator import translate_to_mongodb_query
 
-mcp = FastMCP("MongoDB Universal Connector")
+mcp = MCPServer("MongoDB Universal Connector")
 
 COLLECTION_SCHEMAS = {
     "products": {
