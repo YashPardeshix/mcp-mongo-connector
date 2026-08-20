@@ -45,6 +45,22 @@ def query_collection(collection_name: str, query: str) -> str:
     return json.dumps(response_payload, indent=2)
 
 
+@mcp.tool()
+def describe_schema(collection_name: str) -> str:
+    """Returns the schema and field types for a specific MongoDB collection."""
+    schema = COLLECTION_SCHEMAS.get(collection_name, {})
+    return json.dumps({"collection": collection_name, "schema": schema}, indent=2)
+
+
+def insert_doc(collection_name: str, document: dict) -> str:
+    """Inserts a single document into MongoDB and returns the inserted ID as a string."""
+    collection = db[collection_name]
+    result = collection.insert_one(document)
+    return str(result.inserted_id)
+
+
+
+
 if __name__ == "__main__":
     print("Testing query_collection MCP tool in isolation...")
 
