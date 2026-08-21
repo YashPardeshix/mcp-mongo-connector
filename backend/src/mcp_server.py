@@ -51,7 +51,7 @@ def describe_schema(collection_name: str) -> str:
     schema = COLLECTION_SCHEMAS.get(collection_name, {})
     return json.dumps({"collection": collection_name, "schema": schema}, indent=2)
 
-
+@mcp.tool()
 def insert_doc(collection_name: str, document: dict) -> str:
     """Inserts a single document into MongoDB and returns the inserted ID as a string."""
     collection = db[collection_name]
