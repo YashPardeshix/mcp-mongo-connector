@@ -28,3 +28,5 @@ def insert_doc(collection_name: str, document: dict) -> str:
     collection = db[collection_name]
     result = collection.insert_one(document)
     return str(result.inserted_id)
+
+    #delete a document
