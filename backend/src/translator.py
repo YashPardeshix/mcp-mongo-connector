@@ -19,7 +19,7 @@ def translate_to_mongodb_query(
     """Translates a natural language user request into a MongoDB query dictionary."""
     system_prompt = f"""
     You are a MongoDB Query Translator.
-    Convert the user's natural language request into a valid MongoDB query filter JSON object based on the schema.
+    Convert the user's natural language request into a valid MongoDB query filter JSON object based on the schema..
     
     Collection Schema Map:
     {json.dumps(schema_info, indent=2)}
