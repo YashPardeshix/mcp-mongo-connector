@@ -16,7 +16,7 @@ def translate_to_mongodb_query(
     schema_info: dict,
     model_name: str = "nvidia/nemotron-3-ultra-550b-a55b",
 ) -> dict:
-    """Translates a natural language user request into a MongoDB query dictionary.."""
+    """Translates a natural language user request into a MongoDB query dictionary."""
     system_prompt = f"""
     You are a MongoDB Query Translator.
     Convert the user's natural language request into a valid MongoDB query filter JSON object based on the schema.
