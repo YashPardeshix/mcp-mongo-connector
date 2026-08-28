@@ -1,30 +1,47 @@
 import os
+
 from dotenv import load_dotenv
 from pymongo import MongoClient
+
 
 load_dotenv()
 
 MONGODB_URI = os.getenv("MONGODB_URI")
+
+if not MONGODB_URI:
+    raise RuntimeError("MONGODB_URI is not set in the .env file.")
+
+
 client = MongoClient(MONGODB_URI)
-db = client["mcp_db"]
 
 
-def execute_query(collection_name: str, query_filter: dict) -> list[dict]:
-    """Executes a query filter against a collection and returns JSON-safe documents."""
-    collection = db[collection_name]
-    cursor = collection.find(query_filter)
+def test_connection():
+    client.admin.command("ping")
+    print("MongoDB connection successful!")
 
-    results = []
-    for doc in cursor:
-        if "_id" in doc:
-            doc["_id"] = str(doc["_id"])
-        results.append(doc)
+    database = client["mcp_mongo_connector"]
+    collection = database["products"]
 
-    return results
+    test_document = {
+        "title": "Test Nike Shoe",
+        "price": 4999,
+        "category": "shoes",
+        "brand": "Nike",
+        "color": "blue",
+        "in_stock": True,
+    }
+
+    result = collection.insert_one(test_document)
+
+    print(f"Inserted document ID: {result.inserted_id}")
+
+    inserted_document = collection.find_one(
+        {"_id": result.inserted_id}
+    )
+
+    print("Retrieved document:")
+    print(inserted_document)
 
 
-def insert_doc(collection_name: str, document: dict) -> str:
-    """Inserts a single document into MongoDB and returns the inserted ID as a string."""
-    collection = db[collection_name]
-    result = collection.insert_one(document)
-    return str(result.inserted_id)
+if __name__ == "__main__":
+    test_connection()
