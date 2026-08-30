@@ -1,7 +1,10 @@
 from mcp.server.mcpserver import MCPServer
 
 from mongodb import client
-from translator import translate_to_mongodb_query
+from translator import (
+    translate_to_mongodb_document,
+    translate_to_mongodb_query,
+)
 
 
 mcp = MCPServer("Universal MongoDB Connector")
@@ -15,9 +18,7 @@ def query_collection(
     collection_name: str,
     query: str,
 ) -> list[dict]:
-    """
-    Find documents in a MongoDB collection using natural language.
-    """
+    """Find documents in a MongoDB collection using natural language."""
 
     database = client["mcp_mongo_connector"]
     collection = database[collection_name]
@@ -39,33 +40,55 @@ def query_collection(
         schema_info=schema_info,
     )
 
-    results = list(
+    return list(
         collection.find(
             mongo_filter,
             {"_id": 0},
         )
     )
 
-    return results
-
 
 @mcp.tool(
     name="insert-document",
-    description="Insert a document into a MongoDB collection.",
+    description="Insert a document into a MongoDB collection using natural language.",
 )
 def insert_document(
     collection_name: str,
     document_description: str,
 ) -> dict:
-    """
-    Insert a document described in natural language.
+    """Create and insert a document described in natural language."""
 
-    Translation for insert operations will be connected next.
-    """
+    database = client["mcp_mongo_connector"]
+    collection = database[collection_name]
 
-    raise NotImplementedError(
-        "Insert translation is the next implementation step."
+    schema_info = {
+        "collection": collection_name,
+        "fields": {
+            "title": "string",
+            "price": "number",
+            "category": "string",
+            "brand": "string",
+            "color": "string",
+            "in_stock": "boolean",
+        },
+    }
+
+    document = translate_to_mongodb_document(
+        document_description=document_description,
+        schema_info=schema_info,
     )
+
+    result = collection.insert_one(document)
+
+    inserted_document = collection.find_one(
+        {"_id": result.inserted_id},
+        {"_id": 0},
+    )
+
+    return {
+        "inserted_id": str(result.inserted_id),
+        "document": inserted_document,
+    }
 
 
 @mcp.tool(
@@ -77,11 +100,7 @@ def update_document(
     filter_description: str,
     update_description: str,
 ) -> dict:
-    """
-    Update documents matching a natural-language filter.
-
-    Translation for update operations will be connected next.
-    """
+    """Update matching documents. Translation will be added next."""
 
     raise NotImplementedError(
         "Update translation is the next implementation step."
@@ -96,11 +115,7 @@ def delete_document(
     collection_name: str,
     condition_description: str,
 ) -> dict:
-    """
-    Delete documents matching a natural-language condition.
-
-    Translation for delete operations will be connected next.
-    """
+    """Delete matching documents. Translation will be added next."""
 
     raise NotImplementedError(
         "Delete translation is the next implementation step."
@@ -114,9 +129,7 @@ def delete_document(
 def describe_schema(
     collection_name: str,
 ) -> dict:
-    """
-    Return a basic description of the fields present in a collection.
-    """
+    """Return a basic description of the fields in a collection."""
 
     database = client["mcp_mongo_connector"]
     collection = database[collection_name]
