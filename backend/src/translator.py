@@ -3,7 +3,7 @@ import os
 from typing import Any
 from dotenv import load_dotenv
 from openai import OpenAI
-from mongo_query_schema import MongoQueryFilter
+from mongo_query_schema import MongoQueryFilter, MongoDocument
 
 
 load_dotenv()
@@ -96,20 +96,12 @@ Rules:
     if not isinstance(translated_query, dict):
         raise ValueError("Translator output must be a JSON object.")
 
-    allowed_special_keys = {"$and", "$or", "$nor"}
-    unknown_fields = (
-        set(translated_query.keys())
-        - allowed_fields
-        - allowed_special_keys
-    )
 
-    if unknown_fields:
-        raise ValueError(
-            "Translator used fields not present in the schema: "
-            f"{sorted(unknown_fields)}"
-        )
+    validated = MongoQueryFilter(**translated_query)
+    dumped = validated.model_dump(by_alias=True)
+    cleaned = {key: value for key, value in dumped.items() if value is not None}
 
-    return translated_query
+    return cleaned
 
 
 def translate_to_mongodb_document(
@@ -171,15 +163,12 @@ Rules:
     if not isinstance(translated_document, dict):
         raise ValueError("Document translator output must be a JSON object.")
 
-    unknown_fields = set(translated_document.keys()) - allowed_fields
+    validated = MongoDocument(**translated_document)
+    dumped = validated.model_dump(by_alias=True)
+    cleaned = {key: value for key, value in dumped.items() if value is not None}
+    return cleaned
 
-    if unknown_fields:
-        raise ValueError(
-            "Document translator used fields not present in the schema: "
-            f"{sorted(unknown_fields)}"
-        )
 
-    return translated_document
 
 
 if __name__ == "__main__":

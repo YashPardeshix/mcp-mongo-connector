@@ -17,3 +17,14 @@ class MongoQueryFilter(BaseModel):
     class Config:
         populate_by_name = True
         extra = "forbid"
+
+class MongoDocument(BaseModel):
+    title: Optional[str] = None
+    price: Optional[float] = None
+    category: Optional[str] = None
+    brand: Optional[str] = None
+    color: Optional[str] = None
+    in_stock: Optional[bool] = None
+
+    class Config:
+        extra = "forbid"
