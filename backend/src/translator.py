@@ -99,7 +99,14 @@ Rules:
 
     validated = MongoQueryFilter(**translated_query)
     dumped = validated.model_dump(by_alias=True)
-    cleaned = {key: value for key, value in dumped.items() if value is not None}
+
+    def _strip_none(value):
+        if isinstance(value, dict):
+            return {k: _strip_none(v) for k, v in value.items() if v is not None}
+        return value
+
+    cleaned = {key: _strip_none(value) for key, value in dumped.items() if value is not None}
+    cleaned = {key: value for key, value in cleaned.items() if value != {}}
 
     return cleaned
 

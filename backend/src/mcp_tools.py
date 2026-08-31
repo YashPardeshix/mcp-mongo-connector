@@ -1,4 +1,5 @@
 from mongodb import client
+from mcp.server.mcpserver import MCPServer
 from translator import translate_to_mongodb_document, translate_to_mongodb_query
 from mcp_tool_schema import (
     QueryCollectionInput,
@@ -75,3 +76,11 @@ def delete_document(collection_name: str, condition_description: str) -> dict:
     mongo_filter = translate_to_mongodb_query(user_request=validated_input.condition_description, schema_info=schema_info)
     result = collection.delete_many(mongo_filter)
     return {"deleted_count": result.deleted_count}
+
+if __name__ == "__main__":
+    result = update_document(
+    collection_name="products",
+    filter_description="the Puma product priced at 3499",
+    update_description="change the price to 2999",
+)
+    print(result)

@@ -12,6 +12,8 @@ class MongoQueryFilter(BaseModel):
     title: Optional[str] = None
     price: Optional[Union[float, NumericComparison]] = None
     category: Optional[str] = None
+    brand: Optional[str] = None
+    color: Optional[str] = None
     in_stock: Optional[bool] = None
 
     class Config:
