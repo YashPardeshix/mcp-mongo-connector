@@ -15,7 +15,7 @@ MCP is becoming one of the standard ways AI models connect to external tools and
 3. The translation layer (an LLM call) converts the plain-English request into a structured MongoDB query or document.
 4. That structured output is validated against a Pydantic schema before it ever touches the database — this step exists specifically to catch hallucinated fields, wrong types, and malformed queries before they can cause silent, wrong results.
 5. PyMongo executes the validated operation against MongoDB Atlas.
-6. The result is returned to the caller.
+6. The result is returned to the caller..
 
 ## Tools exposed
 
